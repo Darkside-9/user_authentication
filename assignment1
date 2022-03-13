@@ -1,0 +1,107 @@
+import re
+
+
+def register():
+    data = open("file.txt", "r")
+    username = input("Enter Username: ")
+    regex = "^[a-zA-Z0-9-_]+@[a-zA-Z0-9]+\.[a-z]{1,3}$"
+    l1 = []
+    l2 = []
+    for i in data:
+        a, b = i.split(",")
+        b = b.strip()
+        l1.append(a)
+        l2.append(b)
+    d = dict(zip(l1, l2))
+    print(d)
+    if not re.fullmatch(regex, username):
+        print("Invalid username")
+        register()
+    else:
+        if username in d:
+            print("username already exists!")
+            register()
+        else:
+            password = input("Enter Password: ")
+            regex1 = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{5,16}$"
+            while not re.fullmatch(regex1, password):
+                print("Invalid password")
+                password = input("Enter the password: ")
+            else:
+                password1 = input("Confirm password: ")
+                if password != password1:
+                    print("password doesn't match")
+                    register()
+                else:
+                    data = open("file.txt", "a")
+                    data.write(username + "," + password + "\n")
+                    print("registered successfully")
+
+
+def login():
+    data = open("file.txt", "r")
+    username = input("Enter the username: ")
+    password = input("Enter the password: ")
+    if not len(username or password) < 1:
+        l1 = []
+        l2 = []
+        for i in data:
+            a, b = i.split(",")
+            b = b.strip()
+            l1.append(a)
+            l2.append(b)
+        d = dict(zip(l1, l2))
+
+        try:
+            if d[username]:
+                try:
+                    if password == d[username]:
+                        print("Login successful")
+                    else:
+                        print("username or password incorrect")
+                except:
+                    print("password or username")
+            else:
+                print("username or password doesn't exist")
+        except:
+            print("username or password doesn't exist")
+    else:
+        print("Enter a value")
+
+
+def forgot_password():
+    data = open("file.txt", "r")
+    username = input("Enter the username: ")
+    if not len(username) < 1:
+        l1 = []
+        l2 = []
+        for i in data:
+            a, b = i.split(",")
+            b = b.strip()
+            l1.append(a)
+            l2.append(b)
+        d = dict(zip(l1, l2))
+    try:
+        if d[username]:
+            print("your password is: ", d[username])
+        else:
+            print("username doesn't exist")
+            print("register with new username")
+            register()
+    except:
+        print("username doesn't exist")
+        print("register with new username")
+        register()
+
+
+def home(option=None):
+    option = input("Login | Register | forgot password: ")
+    if option == "Login":
+        login()
+    elif option == "Register":
+        register()
+    else:
+        forgot_password()
+
+
+home()
